@@ -12,7 +12,6 @@
     <string name="custom">Custom</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_payer">Add Payer</string>
     <string name="contentDesc">+</string>
@@ -21,6 +20,11 @@
     <string name="invalid_name">Please enter a valid name</string>
     <string name="invalid_payers">Please choose at least one payer</string>
     <string name="type">Type</string>
-    <string name="invalid_amount">Please enter a number with up to 2 decimal places</string>
+    <string name="invalid_amount">Please enter a number with up to 2 decimal places and provide a title</string>
     <string name="enter_amount">Enter Amount ($)</string>
+
+    <string-array name="types">
+        <item>Business</item>
+        <item>Casual</item>
+    </string-array>
 </resources>

@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
@@ -59,13 +61,27 @@ public class SplitFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSplitBinding.inflate(inflater, container, false);
+
+        // Initialize spinner with values
+        Spinner spinner = binding.spinner;
+        // Create an ArrayAdapter using the string array and a default spinner layout.
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireActivity(),
+                R.array.types,
+                android.R.layout.simple_spinner_item
+        );
+        // Specify the layout to use when the list of choices appears.
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner.
+        spinner.setAdapter(adapter);
+
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i(TAG, "addButton = " + binding.addButton);
+
         // when clicking the '+' button, add the payer from the edittext to the existing list of payers
         binding.addButton.setOnClickListener(this::addPayer);
 
@@ -93,10 +109,11 @@ public class SplitFragment extends Fragment {
     }
 
     private void save(View v) {
+        String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
         setPayers();
 
-        if (!isValid(amount)) {
+        if (!isValid(amount) || title.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_amount, Toast.LENGTH_SHORT).show();
         } else if (payers.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_payers, Toast.LENGTH_SHORT).show();
@@ -105,7 +122,7 @@ public class SplitFragment extends Fragment {
             double S = A / payers.size();
             if (binding.radioButton.isChecked()) {
                 // equal split
-                Log.i(TAG, "Equal pay: " + S);
+                Log.i(TAG, "Expense " + title + " Equal pay: " + S);
             } else {
                 // custom split
                 Log.i(TAG, "Custom pay. Total: " + A);
