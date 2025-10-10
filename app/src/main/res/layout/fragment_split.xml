@@ -55,31 +55,26 @@
         app:layout_constraintStart_toStartOf="@+id/spinner"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <TableLayout
+        android:id="@+id/payers"
+        android:layout_width="409dp"
+        android:layout_height="38dp"
         app:layout_constraintStart_toStartOf="@+id/payTitle"
-        app:layout_constraintTop_toBottomOf="@+id/payTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/payTitle">
+
+<!--        <TableRow-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent" />-->
+    </TableLayout>
 
     <ImageButton
         android:id="@+id/addButton"
         android:layout_width="42dp"
         android:layout_height="42dp"
-        android:layout_marginTop="16dp"
         android:contentDescription="@string/contentDesc"
-        app:layout_constraintStart_toStartOf="@+id/checkBox"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox"
+        app:layout_constraintStart_toStartOf="@+id/payers"
+        app:layout_constraintTop_toBottomOf="@+id/payers"
         app:srcCompat="@android:drawable/ic_input_add" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_payer"
-        app:layout_constraintBottom_toBottomOf="@+id/addButton"
-        app:layout_constraintStart_toEndOf="@+id/addButton"
-        app:layout_constraintTop_toTopOf="@+id/addButton" />
 
     <TextView
         android:id="@+id/participants"
@@ -111,7 +106,7 @@
     </RadioGroup>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
@@ -120,12 +115,23 @@
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:text="@string/cancel"
-        app:layout_constraintStart_toEndOf="@+id/button"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintStart_toEndOf="@+id/save"
+        app:layout_constraintTop_toTopOf="@+id/save" />
+
+    <EditText
+        android:id="@+id/payerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/add_name"
+        app:layout_constraintBottom_toBottomOf="@+id/addButton"
+        app:layout_constraintStart_toEndOf="@+id/addButton"
+        app:layout_constraintTop_toTopOf="@+id/addButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

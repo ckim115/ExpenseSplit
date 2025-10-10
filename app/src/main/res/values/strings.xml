@@ -17,4 +17,6 @@
     <string name="add_payer">Add Payer</string>
     <string name="contentDesc">+</string>
     <string name="paySign">$</string>
+    <string name="add_name">Add Payer Name</string>
+    <string name="invalid">Please enter a name</string>
 </resources>
