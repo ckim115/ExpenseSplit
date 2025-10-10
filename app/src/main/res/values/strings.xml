@@ -4,7 +4,7 @@
     <string name="btn_split">Split</string>
     <string name="btn_deadlines">Deadlines</string>
     <string name="btn_history">History</string>
-    <string name="add_expense">Add Expense</string>
+    <string name="add_expense">Enter Expense Title</string>
     <string name="title">Title</string>
     <string name="payers">Payers</string>
     <string name="pay_type">Pay Type</string>
@@ -18,5 +18,9 @@
     <string name="contentDesc">+</string>
     <string name="paySign">$</string>
     <string name="add_name">Add Payer Name</string>
-    <string name="invalid">Please enter a name</string>
+    <string name="invalid_name">Please enter a valid name</string>
+    <string name="invalid_payers">Please choose at least one payer</string>
+    <string name="type">Type</string>
+    <string name="invalid_amount">Please enter a number with up to 2 decimal places</string>
+    <string name="enter_amount">Enter Amount ($)</string>
 </resources>
