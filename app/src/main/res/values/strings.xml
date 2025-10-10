@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ExpenseSplit</string>
+    <string name="app_name">Expense Split</string>
+    <string name="btn_split">Split</string>
+    <string name="btn_deadlines">Deadlines</string>
+    <string name="btn_history">History</string>
 </resources>
