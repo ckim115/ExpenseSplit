@@ -27,7 +27,6 @@ import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
  */
 public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
-    private List<String> payers = new ArrayList<>();
     private static final String TAG = "SplitFragmentLogger";
 
     public SplitFragment() {
@@ -80,9 +79,9 @@ public class SplitFragment extends Fragment {
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid, Toast.LENGTH_SHORT).show();
         } else {
-            payers.add(name);
-            CheckBox Box = new CheckBox(getActivity());
-            binding.payers.addView(Box);
+            CheckBox box = new CheckBox(getActivity());
+            box.setText(name);
+            binding.payers.addView(box);
         }
     }
 
