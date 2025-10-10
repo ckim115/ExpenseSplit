@@ -20,24 +20,29 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="text"
         android:text="@string/title"
         app:layout_constraintStart_toStartOf="@+id/header"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        tools:ignore="LabelFor" />
 
     <EditText
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="numberDecimal"
+        android:text="@string/paySign"
         app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:ignore="LabelFor" />
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="218dp"
-        android:layout_height="33dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/amount"
         app:layout_constraintTop_toBottomOf="@+id/amount" />
 
@@ -54,7 +59,6 @@
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CheckBox"
         app:layout_constraintStart_toStartOf="@+id/payTitle"
         app:layout_constraintTop_toBottomOf="@+id/payTitle" />
 
@@ -63,6 +67,7 @@
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_marginTop="16dp"
+        android:contentDescription="@string/contentDesc"
         app:layout_constraintStart_toStartOf="@+id/checkBox"
         app:layout_constraintTop_toBottomOf="@+id/checkBox"
         app:srcCompat="@android:drawable/ic_input_add" />
@@ -71,7 +76,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Payer"
+        android:text="@string/add_payer"
         app:layout_constraintBottom_toBottomOf="@+id/addButton"
         app:layout_constraintStart_toEndOf="@+id/addButton"
         app:layout_constraintTop_toTopOf="@+id/addButton" />
