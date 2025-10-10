@@ -30,8 +30,9 @@ import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
 public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
     private static final String TAG = "SplitFragmentLogger";
-    List<String> candidates = new ArrayList<>();
-    List<String> payers = new ArrayList<>();
+    private Spinner spinner;
+    private List<String> candidates = new ArrayList<>();
+    private List<String> payers = new ArrayList<>();
 
     public SplitFragment() {
         // Required empty public constructor
@@ -63,7 +64,7 @@ public class SplitFragment extends Fragment {
         binding = FragmentSplitBinding.inflate(inflater, container, false);
 
         // Initialize spinner with values
-        Spinner spinner = binding.spinner;
+        spinner = binding.spinner;
         // Create an ArrayAdapter using the string array and a default spinner layout.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 requireActivity(),
@@ -109,6 +110,7 @@ public class SplitFragment extends Fragment {
     }
 
     private void save(View v) {
+        String type = spinner.getSelectedItem().toString();
         String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
         setPayers();
@@ -122,7 +124,7 @@ public class SplitFragment extends Fragment {
             double S = A / payers.size();
             if (binding.radioButton.isChecked()) {
                 // equal split
-                Log.i(TAG, "Expense " + title + " Equal pay: " + S);
+                Log.i(TAG, "Expense " + title + " Equal pay: " + S + " for type " + type);
             } else {
                 // custom split
                 Log.i(TAG, "Custom pay. Total: " + A);
