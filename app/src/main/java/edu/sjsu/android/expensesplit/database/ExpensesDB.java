@@ -42,10 +42,10 @@ public class ExpensesDB extends SQLiteOpenHelper {
         return db.query(DATABASE_NAME, null, null, null, null, null, null);
     }
 
-    public Cursor getByID(long rowId) {
+    public Cursor getByID(String[] selectionArgs, String selection) {
         SQLiteDatabase db = getWritableDatabase();
-        String selection = "_id = ?";
-        String[] selectionArgs = { String.valueOf(rowId) };
+//        String selection = "_id = ?";
+//        String[] selectionArgs = { String.valueOf(rowId) };
 
         return db.query(DATABASE_NAME, null, selection, selectionArgs, null, null, null);
     }
@@ -56,10 +56,10 @@ public class ExpensesDB extends SQLiteOpenHelper {
     }
 
 
-    public int deleteByID(long rowId) {
+    public int deleteByID(String[] selectionArgs, String selection) {
         SQLiteDatabase db = getWritableDatabase();
-        String selection = "_id = ?";
-        String[] selectionArgs = { String.valueOf(rowId) };
+//        String selection = "_id = ?";
+//        String[] selectionArgs = { String.valueOf(rowId) };
 
         return db.delete(DATABASE_NAME, selection, selectionArgs);
     }

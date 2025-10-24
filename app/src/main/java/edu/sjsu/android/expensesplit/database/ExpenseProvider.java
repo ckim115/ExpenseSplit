@@ -14,8 +14,8 @@ public class ExpenseProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // Implement this to handle requests to delete one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (selection == null) return database.deleteAll();
+        else return database.deleteByID(selectionArgs, selection);
     }
 
     @Override
@@ -46,7 +46,8 @@ public class ExpenseProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        return database.getAllExpenses();
+        if (projection == null) return database.getAllExpenses();
+        else return database.getByID(projection, selection);
     }
 
     @Override
