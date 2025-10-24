@@ -1,5 +1,7 @@
 package edu.sjsu.android.expensesplit.ui.split;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.sjsu.android.expensesplit.R;
+import edu.sjsu.android.expensesplit.database.ExpensesDB;
 import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
 
 /**
@@ -33,6 +36,10 @@ public class SplitFragment extends Fragment {
     private Spinner spinner;
     private List<String> candidates = new ArrayList<>();
     private List<String> payers = new ArrayList<>();
+
+    private final String AUTHORITY = "dataprovider.expensesplit";
+    private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    private ExpensesDB db;
 
     public SplitFragment() {
         // Required empty public constructor
@@ -75,6 +82,7 @@ public class SplitFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner.
         spinner.setAdapter(adapter);
+        db = new ExpensesDB(getContext());
 
         return binding.getRoot();
     }
@@ -123,6 +131,16 @@ public class SplitFragment extends Fragment {
             double A = Double.parseDouble(amount);
             double S = A / payers.size();
             if (binding.radioButton.isChecked()) {
+                // Add new instance to database
+                for (String payer : payers) {
+                    ContentValues values = new ContentValues();
+                    values.put("title", title);
+                    values.put("name", payer);
+                    values.put("type", type);
+                    values.put("amount", S);
+                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
+                        Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
+                }
                 // equal split
                 Log.i(TAG, "Expense " + title + " Equal pay: " + S + " for type " + type);
             } else {

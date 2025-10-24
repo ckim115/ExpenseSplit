@@ -15,9 +15,10 @@ public class ExpensesDB extends SQLiteOpenHelper {
     protected static final String NAME = "name";
     protected static final String TYPE = "type";
     protected static final String AMOUNT = "amount";
+    private static final int VERSION = 1;
 
-    public ExpensesDB(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public ExpensesDB(@Nullable Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override

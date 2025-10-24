@@ -8,11 +8,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ExpenseSplit">
+        <provider
+            android:name=".database.ExpenseProvider"
+            android:authorities="dataprovider.expensesplit"
+            android:enabled="true"
+            android:exported="true"></provider>
+
         <activity
-            android:name="edu.sjsu.android.expensesplit.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
