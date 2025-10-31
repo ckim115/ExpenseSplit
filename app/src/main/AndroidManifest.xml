@@ -12,7 +12,8 @@
             android:name=".database.ExpenseProvider"
             android:authorities="dataprovider.expensesplit"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true"
+            />
 
         <activity
             android:name=".MainActivity"
