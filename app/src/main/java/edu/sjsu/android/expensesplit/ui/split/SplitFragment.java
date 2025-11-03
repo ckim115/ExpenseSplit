@@ -45,7 +45,7 @@ public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
     private static final String TAG = "SplitFragmentLogger";
     private Spinner spinner;
-    private List<String> candidates = new ArrayList<>();
+    private List<PayerTableRow> candidates = new ArrayList<>();
     private List<String> payers = new ArrayList<>();
 
     private final String AUTHORITY = "dataprovider.expensesplit";
@@ -130,7 +130,7 @@ public class SplitFragment extends Fragment {
 
         PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
         binding.payers.addView(tableRow);
-        candidates.add(name);
+        candidates.add(tableRow);
         binding.payerName.setText("");
     }
 
@@ -146,12 +146,12 @@ public class SplitFragment extends Fragment {
 
         if (!isValid(amount) || title.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_amount, Toast.LENGTH_SHORT).show();
-        } else if (payers.isEmpty()) {
+        } else if (payers.isEmpty() && candidates.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_payers, Toast.LENGTH_SHORT).show();
         } else {
             double A = Double.parseDouble(amount);
-            double S = A / payers.size();
             if (binding.radioButton.isChecked()) {
+                double S = A / payers.size();
                 // Add new instance to database
                 for (String payer : payers) {
                     ContentValues values = new ContentValues();
@@ -165,8 +165,15 @@ public class SplitFragment extends Fragment {
                 // equal split
                 Log.i(TAG, "Expense " + title + " Equal pay: " + S + " for type " + type);
             } else {
-                // custom split
-                Log.i(TAG, "Custom pay. Total: " + A);
+                for (PayerTableRow candidate : candidates) {
+                    ContentValues values = new ContentValues();
+                    values.put("title", title);
+                    values.put("name", candidate.getName());
+                    values.put("type", type);
+                    values.put("amount", A * candidate.getPercentage() * 0.001);
+                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
+                        Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

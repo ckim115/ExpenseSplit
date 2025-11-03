@@ -151,4 +151,12 @@ public class PayerTableRow extends TableRow {
         editText.setVisibility(visibility ? View.VISIBLE : View.GONE);
         textView.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPercentage() {
+        return seekBar.getProgress();
+    }
 }
