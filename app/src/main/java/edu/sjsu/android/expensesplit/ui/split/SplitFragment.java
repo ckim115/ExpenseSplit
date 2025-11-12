@@ -8,16 +8,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +45,7 @@ public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
     private static final String TAG = "SplitFragmentLogger";
     private Spinner spinner;
-    private List<String> candidates = new ArrayList<>();
+    private List<PayerTableRow> candidates = new ArrayList<>();
     private List<String> payers = new ArrayList<>();
 
     private final String AUTHORITY = "dataprovider.expensesplit";
@@ -84,6 +95,17 @@ public class SplitFragment extends Fragment {
         spinner.setAdapter(adapter);
         db = new ExpensesDB(getContext());
 
+        binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            boolean payMode = checkedId == R.id.radioButton2;
+//             Loop through table rows and toggle visibility
+            for (int i = 0; i < binding.payers.getChildCount(); i++) {
+                View row = binding.payers.getChildAt(i);
+                if (row instanceof PayerTableRow) {
+                    ((PayerTableRow) row).changeVisibility(payMode);
+                }
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -104,13 +126,12 @@ public class SplitFragment extends Fragment {
         String name = binding.payerName.getText().toString();
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
-        } else {
-            CheckBox box = new CheckBox(getActivity()); //set on choose textbox, add that name to payers
-            box.setId(candidates.size());
-            box.setText(name);
-            binding.payers.addView(box);
-            candidates.add(name);
         }
+
+        PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
+        binding.payers.addView(tableRow);
+        candidates.add(tableRow);
+        binding.payerName.setText("");
     }
 
     private void cancel(View v) {
@@ -125,12 +146,12 @@ public class SplitFragment extends Fragment {
 
         if (!isValid(amount) || title.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_amount, Toast.LENGTH_SHORT).show();
-        } else if (payers.isEmpty()) {
+        } else if (payers.isEmpty() && candidates.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_payers, Toast.LENGTH_SHORT).show();
         } else {
             double A = Double.parseDouble(amount);
-            double S = A / payers.size();
             if (binding.radioButton.isChecked()) {
+                double S = A / payers.size();
                 // Add new instance to database
                 for (String payer : payers) {
                     ContentValues values = new ContentValues();
@@ -144,8 +165,15 @@ public class SplitFragment extends Fragment {
                 // equal split
                 Log.i(TAG, "Expense " + title + " Equal pay: " + S + " for type " + type);
             } else {
-                // custom split
-                Log.i(TAG, "Custom pay. Total: " + A);
+                for (PayerTableRow candidate : candidates) {
+                    ContentValues values = new ContentValues();
+                    values.put("title", title);
+                    values.put("name", candidate.getName());
+                    values.put("type", type);
+                    values.put("amount", A * candidate.getPercentage() * 0.001);
+                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
+                        Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
