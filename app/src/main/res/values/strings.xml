@@ -22,6 +22,9 @@
     <string name="type">Type</string>
     <string name="invalid_amount">Please enter a number with up to 2 decimal places and provide a title</string>
     <string name="enter_amount">Enter Amount ($)</string>
+    <string name="due_date">Due date</string>
+    <string name="pick_a_date_optional">Pick a date (optional)</string>
+
 
     <string-array name="types">
         <item>Business</item>

@@ -15,7 +15,8 @@ public class ExpensesDB extends SQLiteOpenHelper {
     protected static final String NAME = "name";
     protected static final String TYPE = "type";
     protected static final String AMOUNT = "amount";
-    private static final int VERSION = 1;
+    protected static final String DUE_DATE = "due_date"; // millis since epoch (nullable)
+    private static final int VERSION = 2;
 
     public ExpensesDB(@Nullable Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -23,13 +24,25 @@ public class ExpensesDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = String.format("CREATE TABLE %s (" +
-                "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "%s TEXT NOT NULL, " +
-                "%s TEXT NOT NULL, " +
-                "%s TEXT NOT NULL, " +
-                "%s DOUBLE);", DATABASE_NAME, ID, TITLE, NAME, TYPE, AMOUNT);
+        String createTable = String.format(
+                "CREATE TABLE %s (" +
+                        "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "%s TEXT NOT NULL, " +
+                        "%s TEXT NOT NULL, " +
+                        "%s TEXT NOT NULL, " +
+                        "%s DOUBLE, " +
+                        "%s INTEGER" +
+                        ");",
+                DATABASE_NAME, ID, TITLE, NAME, TYPE, AMOUNT, DUE_DATE
+        );
         db.execSQL(createTable);
+    }
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
+        // Simple forward migration to add due_date
+        if (oldV < 2) {
+            db.execSQL("ALTER TABLE " + DATABASE_NAME + " ADD COLUMN " + DUE_DATE + " INTEGER");
+        }
     }
 
     public long insert(ContentValues values) {
@@ -44,9 +57,6 @@ public class ExpensesDB extends SQLiteOpenHelper {
 
     public Cursor getByID(String[] selectionArgs, String selection) {
         SQLiteDatabase db = getWritableDatabase();
-//        String selection = "_id = ?";
-//        String[] selectionArgs = { String.valueOf(rowId) };
-
         return db.query(DATABASE_NAME, null, selection, selectionArgs, null, null, null);
     }
 
@@ -55,17 +65,9 @@ public class ExpensesDB extends SQLiteOpenHelper {
         return db.delete(DATABASE_NAME, null, null);
     }
 
-
     public int deleteByID(String[] selectionArgs, String selection) {
         SQLiteDatabase db = getWritableDatabase();
-//        String selection = "_id = ?";
-//        String[] selectionArgs = { String.valueOf(rowId) };
-
         return db.delete(DATABASE_NAME, selection, selectionArgs);
     }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
 }
+

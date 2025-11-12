@@ -57,3 +57,5 @@ public class ExpenseProvider extends ContentProvider {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }
+
+

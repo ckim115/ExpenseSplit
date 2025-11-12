@@ -30,6 +30,16 @@
         app:layout_constraintTop_toTopOf="@+id/header"
         tools:ignore="LabelFor" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:textSize="@dimen/text_size"
+        android:text="@string/enter_amount"
+        app:layout_constraintStart_toStartOf="@+id/header"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
+
     <EditText
         android:id="@+id/amount"
         android:layout_width="wrap_content"
@@ -53,27 +63,49 @@
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
+    <!-- Due date label + tappable field -->
+    <TextView
+        android:id="@+id/dueDateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/due_date"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintStart_toStartOf="@+id/spinner"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <TextView
+        android:id="@+id/dueDateText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:padding="12dp"
+        android:background="@android:drawable/editbox_background"
+        android:text="@string/pick_a_date_optional"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintStart_toEndOf="@+id/dueDateLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dueDateLabel"
+        app:layout_constraintBottom_toBottomOf="@+id/dueDateLabel" />
+
     <TextView
         android:id="@+id/payTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="24dp"
         android:textSize="@dimen/text_size"
         android:text="@string/payers"
-        app:layout_constraintStart_toStartOf="@+id/spinner"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintStart_toStartOf="@+id/dueDateLabel"
+        app:layout_constraintTop_toBottomOf="@+id/dueDateText" />
 
     <TableLayout
         android:id="@+id/payers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@+id/payTitle"
-        app:layout_constraintTop_toBottomOf="@+id/payTitle">
-
-<!--        <TableRow-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent" />-->
-    </TableLayout>
+        app:layout_constraintTop_toBottomOf="@+id/payTitle" />
 
     <ImageButton
         android:id="@+id/addButton"
@@ -84,11 +116,22 @@
         app:layout_constraintTop_toBottomOf="@+id/payers"
         app:srcCompat="@android:drawable/ic_input_add" />
 
+    <EditText
+        android:id="@+id/payerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/add_name"
+        app:layout_constraintBottom_toBottomOf="@+id/addButton"
+        app:layout_constraintStart_toEndOf="@+id/addButton"
+        app:layout_constraintTop_toTopOf="@+id/addButton" />
+
     <TextView
         android:id="@+id/participants"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="24dp"
         android:textSize="@dimen/text_size"
         android:text="@string/pay_type"
         app:layout_constraintStart_toStartOf="@+id/addButton"
@@ -117,38 +160,6 @@
             android:text="@string/custom" />
     </RadioGroup>
 
-    <Button
-        android:id="@+id/save"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="56dp"
-        android:text="@string/save"
-        android:textSize="@dimen/text_size"
-        app:layout_constraintStart_toStartOf="@+id/radioGroup"
-        app:layout_constraintTop_toBottomOf="@+id/preview" />
-
-    <Button
-        android:id="@+id/cancel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:textSize="@dimen/text_size"
-        android:text="@string/cancel"
-        app:layout_constraintStart_toEndOf="@+id/save"
-        app:layout_constraintTop_toTopOf="@+id/save" />
-
-    <EditText
-        android:id="@+id/payerName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="@string/add_name"
-        app:layout_constraintBottom_toBottomOf="@+id/addButton"
-        app:layout_constraintStart_toEndOf="@+id/addButton"
-        app:layout_constraintTop_toTopOf="@+id/addButton" />
-
     <TextView
         android:id="@+id/preview"
         android:layout_width="wrap_content"
@@ -156,14 +167,27 @@
         app:layout_constraintStart_toStartOf="@+id/radioGroup"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/save"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/save"
         android:textSize="@dimen/text_size"
-        android:text="@string/enter_amount"
-        app:layout_constraintStart_toStartOf="@+id/header"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
+        app:layout_constraintStart_toStartOf="@+id/radioGroup"
+        app:layout_constraintEnd_toStartOf="@+id/cancel"
+        app:layout_constraintTop_toBottomOf="@+id/preview" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:text="@string/cancel"
+        app:layout_constraintStart_toEndOf="@+id/save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/save" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
