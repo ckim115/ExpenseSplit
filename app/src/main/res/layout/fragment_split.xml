@@ -100,20 +100,26 @@
         app:layout_constraintStart_toStartOf="@+id/dueDateLabel"
         app:layout_constraintTop_toBottomOf="@+id/dueDateText" />
 
-    <TableLayout
-        android:id="@+id/payers"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/payers_scroll"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintHeight_max="200dp"
         app:layout_constraintStart_toStartOf="@+id/payTitle"
-        app:layout_constraintTop_toBottomOf="@+id/payTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/payTitle">
+        <TableLayout
+            android:id="@+id/payers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
     <ImageButton
         android:id="@+id/addButton"
         android:layout_width="35dp"
         android:layout_height="37dp"
         android:contentDescription="@string/contentDesc"
-        app:layout_constraintStart_toStartOf="@+id/payers"
-        app:layout_constraintTop_toBottomOf="@+id/payers"
+        app:layout_constraintStart_toStartOf="@+id/payers_scroll"
+        app:layout_constraintTop_toBottomOf="@+id/payers_scroll"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <EditText
