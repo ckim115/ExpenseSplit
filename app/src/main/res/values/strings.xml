@@ -30,4 +30,10 @@
         <item>Business</item>
         <item>Casual</item>
     </string-array>
+
+    <string-array name="sort_types">
+        <item>Name</item>
+        <item>Amount</item>
+        <item>Date</item>
+    </string-array>
 </resources>

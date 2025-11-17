@@ -1,4 +1,4 @@
-package edu.sjsu.android.expensesplit.ui.split;
+package edu.sjsu.android.expensesplit.ui;
 
 import android.view.View;
 import android.widget.AdapterView;

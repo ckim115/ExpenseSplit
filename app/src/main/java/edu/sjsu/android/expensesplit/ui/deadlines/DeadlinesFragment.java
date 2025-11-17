@@ -7,8 +7,10 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +25,7 @@ public class DeadlinesFragment extends Fragment {
 
     private final String AUTHORITY = "dataprovider.expensesplit";
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    private Spinner spinner;
 
     private ListView list;
 
@@ -33,6 +36,14 @@ public class DeadlinesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_deadlines, container, false);
         list = root.findViewById(R.id.deadlineList);
+        spinner = root.findViewById(R.id.sort);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireActivity(),
+                R.array.sort_types,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
         return root;
     }
 
