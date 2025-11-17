@@ -157,13 +157,10 @@ public class SplitFragment extends Fragment {
                     ContentValues values = new ContentValues();
                     values.put("title", title);
                     values.put("name", payer);
-                    values.put("type", type);
                     values.put("amount", S);
                     if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
                         Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
                 }
-                // equal split
-                Log.i(TAG, "Expense " + title + " Equal pay: " + S + " for type " + type);
             } else {
                 for (PayerTableRow candidate : candidates) {
                     ContentValues values = new ContentValues();
