@@ -46,8 +46,7 @@ public class ExpenseProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        if (projection == null) return database.getAllExpenses();
-        else return database.getByID(projection, selection);
+        return database.getExpenses(projection, selection, selectionArgs, sortOrder);
     }
 
     @Override

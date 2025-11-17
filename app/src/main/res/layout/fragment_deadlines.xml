@@ -7,6 +7,14 @@
     <ListView
         android:id="@+id/deadlineList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="690dp"
+        android:layout_gravity="center"
         android:dividerHeight="8dp" />
+
+    <Spinner
+        android:id="@+id/sort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dividerHeight="8dp"
+        android:layout_gravity="top" />
 </FrameLayout>

@@ -4,17 +4,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import edu.sjsu.android.expensesplit.R;
@@ -23,8 +29,10 @@ public class DeadlinesFragment extends Fragment {
 
     private final String AUTHORITY = "dataprovider.expensesplit";
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    private Spinner spinner;
 
     private ListView list;
+    SimpleCursorAdapter adapter;
 
     @Nullable
     @Override
@@ -33,35 +41,31 @@ public class DeadlinesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_deadlines, container, false);
         list = root.findViewById(R.id.deadlineList);
-        return root;
-    }
+        spinner = root.findViewById(R.id.sort);
+        ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(
+                requireActivity(),
+                R.array.sort_types,
+                android.R.layout.simple_spinner_item
+        );
+        spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinner_adapter);
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadData();
-    }
+        // Creating cursor adapter
+        String[] from = {"title", "name", "amount", "due_date"};
+        int[] to = {
+                android.R.id.text1,
+                android.R.id.text2,
+                android.R.id.text2,
+                android.R.id.text2
+        };
 
-    private void loadData() {
-        long now = System.currentTimeMillis();
-
-        String selection = "due_date IS NOT NULL";
-        String[] args = null;
-        String sort = "due_date ASC";
-
-        Cursor c = requireContext().getContentResolver()
-                .query(CONTENT_URI, null, selection, args, sort);
-
-        String[] from = new String[] {"title", "name", "amount", "due_date"};
-        int[] to   = new int[] { android.R.id.text1, android.R.id.text2, android.R.id.text2, android.R.id.text2 };
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+        adapter = new SimpleCursorAdapter(
                 requireContext(),
                 android.R.layout.simple_list_item_2,
-                c,
+                null,
                 from,
                 to,
-                0
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
         ) {
             @Override
             public void setViewText(TextView v, String text) {
@@ -100,9 +104,43 @@ public class DeadlinesFragment extends Fragment {
                 t2.setText(line2.toString());
             }
         };
-
         list.setAdapter(adapter);
+        return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                loadData();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Code to run when nothing is selected
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    private void loadData() {
+        long now = System.currentTimeMillis();
+        String sort_op = spinner.getSelectedItem().toString().toLowerCase().replace(' ', '_');
+
+        String selection = null; //"due_date IS NOT NULL";
+        String[] args = null;
+        String sort = sort_op + " ASC";
+
+        Cursor c = requireContext().getContentResolver()
+                .query(CONTENT_URI, null, selection, args, sort);
+
+        adapter.changeCursor(c);
+        adapter.notifyDataSetChanged();
     }
 }
-
-

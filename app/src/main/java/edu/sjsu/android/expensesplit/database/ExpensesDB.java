@@ -50,14 +50,9 @@ public class ExpensesDB extends SQLiteOpenHelper {
         return db.insert(DATABASE_NAME, null, values);
     }
 
-    public Cursor getAllExpenses() {
+    public Cursor getExpenses(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = getWritableDatabase();
-        return db.query(DATABASE_NAME, null, null, null, null, null, null);
-    }
-
-    public Cursor getByID(String[] selectionArgs, String selection) {
-        SQLiteDatabase db = getWritableDatabase();
-        return db.query(DATABASE_NAME, null, selection, selectionArgs, null, null, null);
+        return db.query(DATABASE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
     }
 
     public int deleteAll() {
