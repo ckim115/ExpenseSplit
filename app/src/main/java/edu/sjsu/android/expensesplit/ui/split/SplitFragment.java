@@ -122,7 +122,6 @@ public class SplitFragment extends Fragment {
     }
 
     private void addPayer(View v) {
-        Log.i(TAG, "Add player");
         String name = binding.payerName.getText().toString();
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
@@ -158,8 +157,10 @@ public class SplitFragment extends Fragment {
                     values.put("title", title);
                     values.put("name", payer);
                     values.put("amount", S);
-                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
+                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
+                        Log.i("SplitDebug", "Got Here");
                         Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else {
                 for (PayerTableRow candidate : candidates) {
@@ -169,7 +170,7 @@ public class SplitFragment extends Fragment {
                     values.put("type", type);
                     values.put("amount", A * candidate.getPercentage() * 0.001);
                     if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
-                        Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_SHORT).show();
                 }
             }
         }
