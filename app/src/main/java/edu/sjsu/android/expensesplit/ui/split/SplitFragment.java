@@ -150,12 +150,13 @@ public class SplitFragment extends Fragment {
         } else {
             double A = Double.parseDouble(amount);
             if (binding.radioButton.isChecked()) {
-                double S = A / payers.size();
+                double S = A / candidates.size();
                 // Add new instance to database
-                for (String payer : payers) {
+                for (PayerTableRow candidate : candidates) {
                     ContentValues values = new ContentValues();
                     values.put("title", title);
-                    values.put("name", payer);
+                    values.put("name", candidate.getName());
+                    values.put("type", type);
                     values.put("amount", S);
                     if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
                         Log.i("SplitDebug", "Got Here");
