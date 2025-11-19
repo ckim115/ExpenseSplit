@@ -81,10 +81,10 @@ public class DeadlinesFragment extends Fragment {
                 TextView t2 = view.findViewById(android.R.id.text2);
 
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
-                String name  = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                double amt   = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
-                int colDue   = cursor.getColumnIndex("due_date");
-                Long dueMs   = cursor.isNull(colDue) ? null : cursor.getLong(colDue);
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                double amt = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
+                int colDue = cursor.getColumnIndex("due_date");
+                Long dueMs = cursor.isNull(colDue) ? null : cursor.getLong(colDue);
 
                 t1.setText(title);
 
@@ -122,7 +122,6 @@ public class DeadlinesFragment extends Fragment {
                 if (requireContext().getContentResolver().update(CONTENT_URI, values, selection, null) == 1) {
                     Toast.makeText(getActivity(), "Sent to History", Toast.LENGTH_SHORT).show();
                     loadData();
-                    Log.i("DeadlineDebug", "Clicked 2");
                 }
                 return true;
             }
