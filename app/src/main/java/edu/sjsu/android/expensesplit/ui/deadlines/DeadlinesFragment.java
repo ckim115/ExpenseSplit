@@ -1,5 +1,6 @@
 package edu.sjsu.android.expensesplit.ui.deadlines;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -104,6 +106,29 @@ public class DeadlinesFragment extends Fragment {
                 t2.setText(line2.toString());
             }
         };
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // get id
+                Cursor c = (Cursor) list.getItemAtPosition(i);
+
+                int id = c.getInt(c.getColumnIndexOrThrow("_id"));
+                String selection = "_id = " + id;
+
+                ContentValues values = new ContentValues();
+                values.put("_id", id);
+                values.put("complete", 1);
+
+                if (requireContext().getContentResolver().update(CONTENT_URI, values, selection, null) == 1) {
+                    Toast.makeText(getActivity(), "Sent to History", Toast.LENGTH_SHORT).show();
+                    loadData();
+                    Log.i("DeadlineDebug", "Clicked 2");
+                }
+                return true;
+            }
+        });
+
+
         list.setAdapter(adapter);
         return root;
     }
@@ -133,7 +158,7 @@ public class DeadlinesFragment extends Fragment {
         long now = System.currentTimeMillis();
         String sort_op = spinner.getSelectedItem().toString().toLowerCase().replace(' ', '_');
 
-        String selection = null; //"due_date IS NOT NULL";
+        String selection = "complete IS FALSE"; //"due_date IS NOT NULL";
         String[] args = null;
         String sort = sort_op + " ASC";
 
