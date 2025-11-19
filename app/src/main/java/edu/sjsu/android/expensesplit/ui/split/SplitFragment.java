@@ -141,27 +141,20 @@ public class SplitFragment extends Fragment {
             Toast.makeText(getActivity(), R.string.invalid_payers, Toast.LENGTH_SHORT).show();
         } else {
             double A = Double.parseDouble(amount);
-            if (binding.radioButton.isChecked()) {
-                double S = A / candidates.size();
-                // Add new instance to database
-                for (PayerTableRow candidate : candidates) {
-                    ContentValues values = new ContentValues();
-                    values.put("title", title);
-                    values.put("name", candidate.getName());
+            double S = A / candidates.size();
+            // Add new instance to database
+            for (PayerTableRow candidate : candidates) {
+                ContentValues values = new ContentValues();
+                values.put("title", title);
+                values.put("name", candidate.getName());
+                values.put("amount", S);
+                if (binding.radioButton.isChecked()) {
                     values.put("amount", S);
-                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
-                        Log.i("SplitDebug", "Got Here");
-                        Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } else {
-                for (PayerTableRow candidate : candidates) {
-                    ContentValues values = new ContentValues();
-                    values.put("title", title);
-                    values.put("name", candidate.getName());
+                } else {
                     values.put("amount", A * candidate.getPercentage() * 0.001);
-                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
-                        Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_SHORT).show();
+                }
+                if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
+                    Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_SHORT).show();
                 }
             }
         }
