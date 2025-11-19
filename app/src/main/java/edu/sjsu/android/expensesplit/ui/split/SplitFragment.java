@@ -44,7 +44,6 @@ import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
 public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
     private static final String TAG = "SplitFragmentLogger";
-    private Spinner spinner;
     private List<PayerTableRow> candidates = new ArrayList<>();
     private List<String> payers = new ArrayList<>();
 
@@ -81,18 +80,12 @@ public class SplitFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentSplitBinding.inflate(inflater, container, false);
 
-        // Initialize spinner with values
-        spinner = binding.spinner;
         // Create an ArrayAdapter using the string array and a default spinner layout.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 requireActivity(),
                 R.array.types,
                 android.R.layout.simple_spinner_item
         );
-        // Specify the layout to use when the list of choices appears.
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner.
-        spinner.setAdapter(adapter);
         db = new ExpensesDB(getContext());
 
         binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -122,7 +115,6 @@ public class SplitFragment extends Fragment {
     }
 
     private void addPayer(View v) {
-        Log.i(TAG, "Add player");
         String name = binding.payerName.getText().toString();
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
@@ -139,7 +131,6 @@ public class SplitFragment extends Fragment {
     }
 
     private void save(View v) {
-        String type = spinner.getSelectedItem().toString();
         String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
         setPayers();
@@ -150,26 +141,20 @@ public class SplitFragment extends Fragment {
             Toast.makeText(getActivity(), R.string.invalid_payers, Toast.LENGTH_SHORT).show();
         } else {
             double A = Double.parseDouble(amount);
-            if (binding.radioButton.isChecked()) {
-                double S = A / payers.size();
-                // Add new instance to database
-                for (String payer : payers) {
-                    ContentValues values = new ContentValues();
-                    values.put("title", title);
-                    values.put("name", payer);
+            double S = A / candidates.size();
+            // Add new instance to database
+            for (PayerTableRow candidate : candidates) {
+                ContentValues values = new ContentValues();
+                values.put("title", title);
+                values.put("name", candidate.getName());
+                values.put("amount", S);
+                if (binding.radioButton.isChecked()) {
                     values.put("amount", S);
-                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
-                        Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                for (PayerTableRow candidate : candidates) {
-                    ContentValues values = new ContentValues();
-                    values.put("title", title);
-                    values.put("name", candidate.getName());
-                    values.put("type", type);
+                } else {
                     values.put("amount", A * candidate.getPercentage() * 0.001);
-                    if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null)
-                        Toast.makeText(getActivity(), "Student Added", Toast.LENGTH_SHORT).show();
+                }
+                if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
+                    Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_SHORT).show();
                 }
             }
         }
