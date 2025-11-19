@@ -64,5 +64,10 @@ public class ExpensesDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(DATABASE_NAME, selection, selectionArgs);
     }
+
+    public int update(ContentValues values, String selection, String[] selectionArgs) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.update(DATABASE_NAME, values, selection, selectionArgs);
+    }
 }
 
