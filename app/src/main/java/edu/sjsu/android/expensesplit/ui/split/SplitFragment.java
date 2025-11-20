@@ -153,6 +153,7 @@ public class SplitFragment extends Fragment {
         String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
         String date = binding.dateOutput.getText().toString();
+        Log.i("DateDebug", date);
         setPayers();
 
         if (!isValid(amount) || title.isEmpty()) {
@@ -168,6 +169,15 @@ public class SplitFragment extends Fragment {
                 values.put("title", title);
                 values.put("name", candidate.getName());
                 values.put("amount", S);
+                if (!date.isEmpty()) {
+                    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    LocalDate olddate = LocalDate.parse(date, inputFormatter);
+
+                    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String newDate = olddate.format(outputFormatter);
+                    values.put("due_date", newDate);
+                }
+
                 if (binding.radioButton.isChecked()) {
                     values.put("amount", S);
                 } else {
