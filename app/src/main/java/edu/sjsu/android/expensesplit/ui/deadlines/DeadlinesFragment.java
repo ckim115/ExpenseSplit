@@ -22,8 +22,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -100,11 +102,12 @@ public class DeadlinesFragment extends Fragment {
 
                     line2.append(" • due ").append(formatted);
 
-                    LocalDateTime specificDateTime = LocalDateTime.of(2025, 10, 20, 0, 0, 0);
-                    long specificTimeMillis = specificDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                    LocalDate today = LocalDate.now();
+                    Log.d("DEBUG", "parsed = " + parsed);
+                    Log.d("DEBUG", "today  = " + today);
 
                     // Overdue in red
-                    if (specificTimeMillis < System.currentTimeMillis()) {
+                    if (parsed.isBefore(today)) {
                         t1.setTextColor(0xFFB00020);
                         t2.setTextColor(0xFFB00020);
                     } else {
@@ -163,7 +166,6 @@ public class DeadlinesFragment extends Fragment {
     }
 
     private void loadData() {
-        long now = System.currentTimeMillis();
         String sort_op = spinner.getSelectedItem().toString().toLowerCase().replace(' ', '_');
 
         String selection = "complete IS FALSE"; //"due_date IS NOT NULL";

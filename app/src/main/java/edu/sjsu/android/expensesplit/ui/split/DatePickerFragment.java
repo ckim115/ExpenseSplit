@@ -35,6 +35,9 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         DateViewModel model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
-        model.getCurrentDate().setValue(year + "-" + month + "-" + day);
+        int monthFromOne = month + 1;
+        String curMonth = monthFromOne == monthFromOne % 10 ? "0" + monthFromOne : String.valueOf(monthFromOne);
+        String curDay = day == day % 10 ? "0" + day : String.valueOf(day);
+        model.getCurrentDate().setValue(year + "-" + curMonth + "-" + curDay);
     }
 }
