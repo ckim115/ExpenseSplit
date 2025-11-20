@@ -168,7 +168,7 @@ public class DeadlinesFragment extends Fragment {
 
         String selection = "complete IS FALSE"; //"due_date IS NOT NULL";
         String[] args = null;
-        String sort = sort_op + " ASC";
+        String sort = " (CASE WHEN " + sort_op + " IS NULL then 1 ELSE 0 END)," + sort_op + " ASC";
 
         Cursor c = requireContext().getContentResolver()
                 .query(CONTENT_URI, null, selection, args, sort);
