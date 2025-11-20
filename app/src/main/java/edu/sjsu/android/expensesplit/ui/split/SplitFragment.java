@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.InputFilter;
@@ -31,6 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +56,7 @@ public class SplitFragment extends Fragment {
     private final String AUTHORITY = "dataprovider.expensesplit";
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     private ExpensesDB db;
+    private DateViewModel model;
 
     public SplitFragment() {
         // Required empty public constructor
@@ -81,6 +86,19 @@ public class SplitFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSplitBinding.inflate(inflater, container, false);
+
+        // Get the ViewModel.
+        model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
+        // Create the observer which updates the UI.
+        final Observer<String> dateObserver = newDate -> {
+            // Update the UI, in this case, a TextView.
+            LocalDate parsed = LocalDate.parse(newDate); // expects yyyy-MM-dd
+            String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            binding.dateOutput.setText(formatted);
+        };
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        model.getCurrentDate().observe(getViewLifecycleOwner(), dateObserver);
 
         db = new ExpensesDB(getContext());
 
@@ -134,6 +152,7 @@ public class SplitFragment extends Fragment {
     private void save(View v) {
         String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
+        String date = binding.dateOutput.getText().toString();
         setPayers();
 
         if (!isValid(amount) || title.isEmpty()) {
