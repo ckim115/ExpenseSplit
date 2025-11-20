@@ -65,8 +65,8 @@
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-    <TextView
-        android:id="@+id/dueDateText"
+    <Button
+        android:id="@+id/pickDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -89,7 +89,7 @@
         android:textSize="@dimen/text_size"
         android:text="@string/payers"
         app:layout_constraintStart_toStartOf="@+id/dueDateLabel"
-        app:layout_constraintTop_toBottomOf="@+id/dueDateText" />
+        app:layout_constraintTop_toBottomOf="@+id/pickDate" />
 
     <ScrollView
         android:id="@+id/payers_scroll"

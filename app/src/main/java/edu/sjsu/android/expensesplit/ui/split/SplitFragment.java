@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -80,12 +82,6 @@ public class SplitFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentSplitBinding.inflate(inflater, container, false);
 
-        // Create an ArrayAdapter using the string array and a default spinner layout.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                requireActivity(),
-                R.array.types,
-                android.R.layout.simple_spinner_item
-        );
         db = new ExpensesDB(getContext());
 
         binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -97,6 +93,11 @@ public class SplitFragment extends Fragment {
                     ((PayerTableRow) row).changeVisibility(payMode);
                 }
             }
+        });
+
+        binding.pickDate.setOnClickListener((View v) -> {
+            DatePickerFragment dateFragment = new DatePickerFragment();
+            dateFragment.show(getChildFragmentManager(), "datePicker");
         });
 
         return binding.getRoot();
