@@ -168,7 +168,7 @@ public class DeadlinesFragment extends Fragment {
     private void loadData() {
         String sort_op = spinner.getSelectedItem().toString().toLowerCase().replace(' ', '_');
 
-        String selection = "complete IS FALSE"; //"due_date IS NOT NULL";
+        String selection = "complete IS 0"; //"due_date IS NOT NULL";
         String[] args = null;
         String sort = " (CASE WHEN " + sort_op + " IS NULL then 1 ELSE 0 END)," + sort_op + " ASC";
 
