@@ -6,34 +6,18 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -139,12 +123,12 @@ public class SplitFragment extends Fragment {
         String name = binding.payerName.getText().toString();
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
+        } else {
+            PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
+            binding.payers.addView(tableRow);
+            candidates.add(tableRow);
+            binding.payerName.setText("");
         }
-
-        PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
-        binding.payers.addView(tableRow);
-        candidates.add(tableRow);
-        binding.payerName.setText("");
     }
 
     private void save(View v) {
