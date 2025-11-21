@@ -1,21 +1,37 @@
 package edu.sjsu.android.expensesplit.ui.split;
 
+import static android.app.ProgressDialog.show;
+import static android.content.Context.NOTIFICATION_SERVICE;
+
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,13 +51,18 @@ import android.widget.Toast;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import edu.sjsu.android.expensesplit.R;
 import edu.sjsu.android.expensesplit.database.ExpensesDB;
 import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
+import edu.sjsu.android.expensesplit.notifications.Notification;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,6 +101,8 @@ public class SplitFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        createNotificationChannel();
     }
 
     @Override
@@ -173,6 +196,11 @@ public class SplitFragment extends Fragment {
                     DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     String newDate = olddate.format(outputFormatter);
                     values.put("due_date", newDate);
+
+//                    if (checkNotificationPermissions(requireActivity())) {
+//                        // Schedule a notification
+//                        scheduleNotification();
+//                    }
                 }
 
                 if (binding.radioButton.isChecked()) {
@@ -180,7 +208,7 @@ public class SplitFragment extends Fragment {
                 } else {
                     values.put("amount", A * candidate.getPercentage() * 0.001);
                 }
-                if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
+                if (requireActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
                     Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_LONG).show();
                 }
             }
@@ -200,5 +228,96 @@ public class SplitFragment extends Fragment {
 
     private boolean isValid (String input) {
         return !input.isEmpty() && (input.indexOf('.') == -1 || input.substring(input.indexOf('.')).length() <= 3);
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    private void scheduleNotification() {
+        // Create an intent for the Notification BroadcastReceiver
+        Intent intent = new Intent(requireActivity().getApplicationContext(), Notification.class);
+
+        // Extract title and message from user input
+        String title = binding.title.getText().toString();
+        String message = "no message for now";
+
+        // Add title and message as extras to the intent
+        intent.putExtra("titleExtra", title);
+        intent.putExtra("messageExtra", message);
+
+        // Create a PendingIntent for the broadcast
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                requireActivity().getApplicationContext(),
+                121,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        // Get the AlarmManager service
+        AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
+
+        // Get the selected time and schedule the notification
+        String date = binding.dateOutput.getText().toString();
+        LocalDateTime localDateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        long time = localDateTime
+                .atZone(ZoneId.systemDefault())
+                .toInstant().toEpochMilli();
+
+        alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                time,
+                pendingIntent
+        );
+
+        // Show an alert dialog with information
+        // about the scheduled notification
+        showAlert(time, title, message);
+    }
+
+    private void showAlert(Long time, String title, String message) {
+        // Format the time for display
+        Date date = new Date(time);
+        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(requireActivity().getApplicationContext());
+        java.text.DateFormat timeFormat = DateFormat.getTimeFormat(requireActivity().getApplicationContext());
+
+        // Create and show an alert dialog with notification details
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity())
+                .setTitle("Notification Scheduled")
+                .setMessage(
+                        "Title: "+ title +"\nMessage: " + message + "\nAt: " + dateFormat.format(date) + " " + timeFormat.format(date)
+                )
+                .setPositiveButton("Okay", (a, b) -> {});
+        builder.show();
+    }
+
+    private void createNotificationChannel() {
+        // Create a notification channel for devices running
+        // Android Oreo (API level 26) and above
+        String name = "Notify Channel";
+        String desc = "A Description of the Channel";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel("channel1", name, importance);
+        channel.setDescription(desc);
+
+        // Get the NotificationManager service and create the channel
+        NotificationManager notificationManager = (NotificationManager) requireActivity().getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    boolean checkNotificationPermissions(Context context) {
+        // Check if notification permissions are granted
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        boolean isEnabled = notificationManager.areNotificationsEnabled();
+
+        if (!isEnabled) {
+            // Open the app notification settings if notifications are not enabled
+            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+            context.startActivity(intent);
+
+            return false;
+        }
+
+        // Permissions are granted
+        return true;
     }
 }
