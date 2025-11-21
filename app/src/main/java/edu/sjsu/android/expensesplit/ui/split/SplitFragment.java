@@ -235,11 +235,28 @@ public class SplitFragment extends Fragment {
 
         // Extract title and message from user input
         String title = binding.title.getText().toString();
-        String message = "no message for now";
+        String amount = binding.amount.getText().toString();
+        StringBuilder message = new StringBuilder();
+
+        int count = candidates.size();
+        int maxShown = 3;
+        int shown = Math.min(count, maxShown);
+        for (int i = 0; i < shown; i++) {
+            message.append(candidates.get(i).getName());
+            if (i < shown - 1) {
+                message.append(", ");
+            }
+        }
+        if (count > maxShown) {
+            int others = count - maxShown;
+            message.append(" and ").append(others).append(" other(s)");
+        }
+
+        message.append(" owe " + amount + " today");
 
         // Add title and message as extras to the intent
         intent.putExtra("titleExtra", title);
-        intent.putExtra("messageExtra", message);
+        intent.putExtra("messageExtra", message.toString());
 
         // Create a PendingIntent for the broadcast
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -268,7 +285,7 @@ public class SplitFragment extends Fragment {
 
         // Show an alert dialog with information
         // about the scheduled notification
-        showAlert(time, title, message);
+        showAlert(time, title, message.toString());
     }
 
     private void showAlert(Long time, String title, String message) {
@@ -276,15 +293,6 @@ public class SplitFragment extends Fragment {
         Date date = new Date(time);
         java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(requireActivity().getApplicationContext());
         java.text.DateFormat timeFormat = DateFormat.getTimeFormat(requireActivity().getApplicationContext());
-
-        // Create and show an alert dialog with notification details
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity())
-                .setTitle("Notification Scheduled")
-                .setMessage(
-                        "Title: "+ title +"\nMessage: " + message + "\nAt: " + dateFormat.format(date) + " " + timeFormat.format(date)
-                )
-                .setPositiveButton("Okay", (a, b) -> {});
-        builder.show();
     }
 
     boolean checkNotificationPermissions(Context context) {
