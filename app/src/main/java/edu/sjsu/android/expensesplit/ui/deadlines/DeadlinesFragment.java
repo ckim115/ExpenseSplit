@@ -22,6 +22,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -83,19 +89,25 @@ public class DeadlinesFragment extends Fragment {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 double amt = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
-                int colDue = cursor.getColumnIndex("due_date");
-                Long dueMs = cursor.isNull(colDue) ? null : cursor.getLong(colDue);
+                int dateIndex = cursor.getColumnIndex("due_date");
+                String dueDate = dateIndex == -1 ? null : cursor.getString(dateIndex);
 
                 t1.setText(title);
 
                 StringBuilder line2 = new StringBuilder();
                 line2.append(name).append(" • $").append(String.format("%.2f", amt));
-                if (dueMs != null) {
-                    String dStr = DateFormat.getDateFormat(context).format(new Date(dueMs));
-                    line2.append(" • due ").append(dStr);
+                if (dueDate != null) {
+                    LocalDate parsed = LocalDate.parse(dueDate); // expects yyyy-MM-dd
+                    String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+                    line2.append(" • due ").append(formatted);
+
+                    LocalDate today = LocalDate.now();
+                    Log.d("DEBUG", "parsed = " + parsed);
+                    Log.d("DEBUG", "today  = " + today);
 
                     // Overdue in red
-                    if (dueMs < System.currentTimeMillis()) {
+                    if (parsed.isBefore(today)) {
                         t1.setTextColor(0xFFB00020);
                         t2.setTextColor(0xFFB00020);
                     } else {
@@ -154,12 +166,11 @@ public class DeadlinesFragment extends Fragment {
     }
 
     private void loadData() {
-        long now = System.currentTimeMillis();
         String sort_op = spinner.getSelectedItem().toString().toLowerCase().replace(' ', '_');
 
-        String selection = "complete IS FALSE"; //"due_date IS NOT NULL";
+        String selection = "complete IS 0"; //"due_date IS NOT NULL";
         String[] args = null;
-        String sort = sort_op + " ASC";
+        String sort = " (CASE WHEN " + sort_op + " IS NULL then 1 ELSE 0 END)," + sort_op + " ASC";
 
         Cursor c = requireContext().getContentResolver()
                 .query(CONTENT_URI, null, selection, args, sort);

@@ -7,7 +7,7 @@
     <ListView
         android:id="@+id/historyList"
         android:layout_width="match_parent"
-        android:layout_height="690dp"
+        android:layout_height="602dp"
         android:layout_gravity="center"
         android:dividerHeight="8dp" />
 

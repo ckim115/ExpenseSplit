@@ -65,21 +65,21 @@
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-    <TextView
-        android:id="@+id/dueDateText"
-        android:layout_width="0dp"
+    <ImageButton
+        android:id="@+id/pickDate"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:padding="12dp"
         android:background="@android:drawable/editbox_background"
-        android:text="@string/pick_a_date_optional"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        app:layout_constraintStart_toEndOf="@+id/dueDateLabel"
+        app:layout_constraintBottom_toBottomOf="@+id/dueDateLabel"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.042"
+        app:layout_constraintStart_toEndOf="@+id/dueDateLabel"
         app:layout_constraintTop_toTopOf="@+id/dueDateLabel"
-        app:layout_constraintBottom_toBottomOf="@+id/dueDateLabel" />
+        app:layout_constraintVertical_bias="0.476"
+        app:srcCompat="@android:drawable/ic_menu_my_calendar" />
 
     <TextView
         android:id="@+id/payTitle"
@@ -89,13 +89,13 @@
         android:textSize="@dimen/text_size"
         android:text="@string/payers"
         app:layout_constraintStart_toStartOf="@+id/dueDateLabel"
-        app:layout_constraintTop_toBottomOf="@+id/dueDateText" />
+        app:layout_constraintTop_toBottomOf="@+id/pickDate" />
 
     <ScrollView
         android:id="@+id/payers_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintHeight_max="200dp"
+        app:layout_constraintHeight_max="130dp"
         app:layout_constraintStart_toStartOf="@+id/payTitle"
         app:layout_constraintTop_toBottomOf="@+id/payTitle">
         <TableLayout
@@ -185,6 +185,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/save" />
 
+    <TextView
+        android:id="@+id/dateOutput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@+id/pickDate"
+        app:layout_constraintStart_toEndOf="@+id/pickDate"
+        app:layout_constraintTop_toTopOf="@+id/pickDate"
+        app:layout_constraintVertical_bias="0.52" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
