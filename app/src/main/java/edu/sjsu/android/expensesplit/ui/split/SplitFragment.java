@@ -113,7 +113,6 @@ public class SplitFragment extends Fragment {
         model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
         // Create the observer which updates the UI.
         final Observer<String> dateObserver = newDate -> {
-            if (binding == null || !isAdded()) return;
             // Update the UI, in this case, a TextView.
             LocalDate parsed = LocalDate.parse(newDate); // expects yyyy-MM-dd
             String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -152,7 +151,6 @@ public class SplitFragment extends Fragment {
         // when clicking the '+' button, add the payer from the edittext to the existing list of payers
         binding.addButton.setOnClickListener(this::addPayer);
 
-        // for now, just output a log message whenever submit/cancel pressed
         binding.save.setOnClickListener(this::save);
         binding.cancel.setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigate(R.id.homeFragment));
