@@ -113,6 +113,7 @@ public class SplitFragment extends Fragment {
         model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
         // Create the observer which updates the UI.
         final Observer<String> dateObserver = newDate -> {
+            if (binding == null || !isAdded()) return;
             // Update the UI, in this case, a TextView.
             LocalDate parsed = LocalDate.parse(newDate); // expects yyyy-MM-dd
             String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
@@ -142,6 +143,7 @@ public class SplitFragment extends Fragment {
 
         return binding.getRoot();
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -206,10 +208,9 @@ public class SplitFragment extends Fragment {
                 } else {
                     values.put("amount", A * candidate.getPercentage() * 0.001);
                 }
-                if (requireActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
-                    Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_LONG).show();
-                }
+                requireActivity().getContentResolver().insert(CONTENT_URI, values);
             }
+            Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_LONG).show();
             NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
         }
     }
@@ -282,19 +283,7 @@ public class SplitFragment extends Fragment {
                 time,
                 pendingIntent
         );
-
-        // Show an alert dialog with information
-        // about the scheduled notification
-        showAlert(time, title, message.toString());
     }
-
-    private void showAlert(Long time, String title, String message) {
-        // Format the time for display
-        Date date = new Date(time);
-        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(requireActivity().getApplicationContext());
-        java.text.DateFormat timeFormat = DateFormat.getTimeFormat(requireActivity().getApplicationContext());
-    }
-
     boolean checkNotificationPermissions(Context context) {
         // Check if notification permissions are granted
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
