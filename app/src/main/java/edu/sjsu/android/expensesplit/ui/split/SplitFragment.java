@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.Editable;
 import android.text.InputFilter;
@@ -130,7 +131,8 @@ public class SplitFragment extends Fragment {
 
         // for now, just output a log message whenever submit/cancel pressed
         binding.save.setOnClickListener(this::save);
-        binding.cancel.setOnClickListener(this::cancel);
+        binding.cancel.setOnClickListener(v ->
+                NavHostFragment.findNavController(this).navigate(R.id.homeFragment));
     }
 
     private void addPayer(View v) {
@@ -145,15 +147,10 @@ public class SplitFragment extends Fragment {
         binding.payerName.setText("");
     }
 
-    private void cancel(View v) {
-        Log.i(TAG, "Cancelled");
-    }
-
     private void save(View v) {
         String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
         String date = binding.dateOutput.getText().toString();
-        Log.i("DateDebug", date);
         setPayers();
 
         if (!isValid(amount) || title.isEmpty()) {
@@ -184,9 +181,10 @@ public class SplitFragment extends Fragment {
                     values.put("amount", A * candidate.getPercentage() * 0.001);
                 }
                 if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
-                    Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_LONG).show();
                 }
             }
+            NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
         }
     }
 
