@@ -101,8 +101,6 @@ public class SplitFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        createNotificationChannel();
     }
 
     @Override
@@ -197,10 +195,10 @@ public class SplitFragment extends Fragment {
                     String newDate = olddate.format(outputFormatter);
                     values.put("due_date", newDate);
 
-//                    if (checkNotificationPermissions(requireActivity())) {
-//                        // Schedule a notification
-//                        scheduleNotification();
-//                    }
+                    if (checkNotificationPermissions(requireActivity())) {
+                        // Schedule a notification
+                        scheduleNotification();
+                    }
                 }
 
                 if (binding.radioButton.isChecked()) {
@@ -256,7 +254,8 @@ public class SplitFragment extends Fragment {
 
         // Get the selected time and schedule the notification
         String date = binding.dateOutput.getText().toString();
-        LocalDateTime localDateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDateTime localDateTime = localDate.atStartOfDay();
         long time = localDateTime
                 .atZone(ZoneId.systemDefault())
                 .toInstant().toEpochMilli();
@@ -286,20 +285,6 @@ public class SplitFragment extends Fragment {
                 )
                 .setPositiveButton("Okay", (a, b) -> {});
         builder.show();
-    }
-
-    private void createNotificationChannel() {
-        // Create a notification channel for devices running
-        // Android Oreo (API level 26) and above
-        String name = "Notify Channel";
-        String desc = "A Description of the Channel";
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = new NotificationChannel("channel1", name, importance);
-        channel.setDescription(desc);
-
-        // Get the NotificationManager service and create the channel
-        NotificationManager notificationManager = (NotificationManager) requireActivity().getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.createNotificationChannel(channel);
     }
 
     boolean checkNotificationPermissions(Context context) {
