@@ -34,13 +34,11 @@ import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
  */
 public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
-    private static final String TAG = "SplitFragmentLogger";
     private List<PayerTableRow> candidates = new ArrayList<>();
     private List<String> payers = new ArrayList<>();
 
     private final String AUTHORITY = "dataprovider.expensesplit";
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-    private ExpensesDB db;
     private DateViewModel model;
 
     public SplitFragment() {
@@ -84,8 +82,6 @@ public class SplitFragment extends Fragment {
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         model.getCurrentDate().observe(getViewLifecycleOwner(), dateObserver);
-
-        db = new ExpensesDB(getContext());
 
         binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             boolean payMode = checkedId == R.id.radioButton2;
