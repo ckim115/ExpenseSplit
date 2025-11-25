@@ -103,8 +103,6 @@ public class DeadlinesFragment extends Fragment {
                     line2.append(" • due ").append(formatted);
 
                     LocalDate today = LocalDate.now();
-                    Log.d("DEBUG", "parsed = " + parsed);
-                    Log.d("DEBUG", "today  = " + today);
 
                     // Overdue in red
                     if (parsed.isBefore(today)) {
