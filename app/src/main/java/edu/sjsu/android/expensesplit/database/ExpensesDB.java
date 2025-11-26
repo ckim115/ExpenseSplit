@@ -14,7 +14,7 @@ public class ExpensesDB extends SQLiteOpenHelper {
     protected static final String TITLE = "title";
     protected static final String NAME = "name";
     protected static final String AMOUNT = "amount";
-    protected static final String DUE_DATE = "due_date"; // millis since epoch (nullable)
+    protected static final String DUE_DATE = "due_date";
     protected static final String COMPLETED = "complete";
     private static final int VERSION = 2;
 
@@ -30,7 +30,7 @@ public class ExpensesDB extends SQLiteOpenHelper {
                         "%s TEXT NOT NULL, " +
                         "%s TEXT NOT NULL, " +
                         "%s DOUBLE, " +
-                        "%s INTEGER, " +
+                        "%s TEXT, " +
                         "%s INTEGER NOT NULL DEFAULT 0" +
                         ");",
                 DATABASE_NAME, ID, TITLE, NAME, AMOUNT, DUE_DATE, COMPLETED

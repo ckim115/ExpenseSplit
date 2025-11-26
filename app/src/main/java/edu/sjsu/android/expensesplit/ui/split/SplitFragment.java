@@ -7,28 +7,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,13 +34,12 @@ import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
  */
 public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
-    private static final String TAG = "SplitFragmentLogger";
     private List<PayerTableRow> candidates = new ArrayList<>();
     private List<String> payers = new ArrayList<>();
 
     private final String AUTHORITY = "dataprovider.expensesplit";
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-    private ExpensesDB db;
+    private DateViewModel model;
 
     public SplitFragment() {
         // Required empty public constructor
@@ -80,13 +70,18 @@ public class SplitFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentSplitBinding.inflate(inflater, container, false);
 
-        // Create an ArrayAdapter using the string array and a default spinner layout.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                requireActivity(),
-                R.array.types,
-                android.R.layout.simple_spinner_item
-        );
-        db = new ExpensesDB(getContext());
+        // Get the ViewModel.
+        model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
+        // Create the observer which updates the UI.
+        final Observer<String> dateObserver = newDate -> {
+            // Update the UI, in this case, a TextView.
+            LocalDate parsed = LocalDate.parse(newDate); // expects yyyy-MM-dd
+            String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            binding.dateOutput.setText(formatted);
+        };
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        model.getCurrentDate().observe(getViewLifecycleOwner(), dateObserver);
 
         binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             boolean payMode = checkedId == R.id.radioButton2;
@@ -97,6 +92,11 @@ public class SplitFragment extends Fragment {
                     ((PayerTableRow) row).changeVisibility(payMode);
                 }
             }
+        });
+
+        binding.pickDate.setOnClickListener((View v) -> {
+            DatePickerFragment dateFragment = new DatePickerFragment();
+            dateFragment.show(getChildFragmentManager(), "datePicker");
         });
 
         return binding.getRoot();
@@ -111,28 +111,26 @@ public class SplitFragment extends Fragment {
 
         // for now, just output a log message whenever submit/cancel pressed
         binding.save.setOnClickListener(this::save);
-        binding.cancel.setOnClickListener(this::cancel);
+        binding.cancel.setOnClickListener(v ->
+                NavHostFragment.findNavController(this).navigate(R.id.homeFragment));
     }
 
     private void addPayer(View v) {
         String name = binding.payerName.getText().toString();
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
+        } else {
+            PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
+            binding.payers.addView(tableRow);
+            candidates.add(tableRow);
+            binding.payerName.setText("");
         }
-
-        PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
-        binding.payers.addView(tableRow);
-        candidates.add(tableRow);
-        binding.payerName.setText("");
-    }
-
-    private void cancel(View v) {
-        Log.i(TAG, "Cancelled");
     }
 
     private void save(View v) {
         String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
+        String date = binding.dateOutput.getText().toString();
         setPayers();
 
         if (!isValid(amount) || title.isEmpty()) {
@@ -148,15 +146,25 @@ public class SplitFragment extends Fragment {
                 values.put("title", title);
                 values.put("name", candidate.getName());
                 values.put("amount", S);
+                if (!date.isEmpty()) {
+                    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    LocalDate olddate = LocalDate.parse(date, inputFormatter);
+
+                    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String newDate = olddate.format(outputFormatter);
+                    values.put("due_date", newDate);
+                }
+
                 if (binding.radioButton.isChecked()) {
                     values.put("amount", S);
                 } else {
                     values.put("amount", A * candidate.getPercentage() * 0.001);
                 }
                 if (getActivity().getContentResolver().insert(CONTENT_URI, values) != null) {
-                    Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_LONG).show();
                 }
             }
+            NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
         }
     }
 

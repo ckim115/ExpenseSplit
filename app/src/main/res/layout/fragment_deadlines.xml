@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -7,14 +8,22 @@
     <ListView
         android:id="@+id/deadlineList"
         android:layout_width="match_parent"
-        android:layout_height="690dp"
+        android:layout_height="598dp"
         android:layout_gravity="center"
         android:dividerHeight="8dp" />
 
     <Spinner
         android:id="@+id/sort"
-        android:layout_width="match_parent"
+        android:layout_width="288dp"
         android:layout_height="wrap_content"
-        android:dividerHeight="8dp"
-        android:layout_gravity="top" />
+        android:layout_gravity="top|left"
+        android:dividerHeight="8dp" />
+
+    <CheckBox
+        android:id="@+id/sortOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:layout_gravity="top|right"
+        android:text="DESC" />
+
 </FrameLayout>

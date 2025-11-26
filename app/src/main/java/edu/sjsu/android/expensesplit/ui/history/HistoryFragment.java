@@ -96,8 +96,8 @@ public class HistoryFragment extends Fragment {
                     String dStr = DateFormat.getDateFormat(context).format(new Date(dueMs));
                     line2.append(" • due ").append(dStr);
 
-                    t1.setTextColor(0xFFB00020);
-                    t2.setTextColor(0xFFB00020);
+                    t1.setTextColor(0xFF000000);
+                    t2.setTextColor(0xFF666666);
                 }
                 t2.setText(line2.toString());
             }
@@ -153,7 +153,7 @@ public class HistoryFragment extends Fragment {
         long now = System.currentTimeMillis();
         String sort_op = spinner.getSelectedItem().toString().toLowerCase().replace(' ', '_');
 
-        String selection = "complete IS TRUE"; //"due_date IS NOT NULL";
+        String selection = "complete IS 1"; //"due_date IS NOT NULL";
         String[] args = null;
         String sort = sort_op + " ASC";
 
