@@ -19,6 +19,8 @@
     <string name="add_name">Add Payer Name</string>
     <string name="invalid_name">Please enter a valid name</string>
     <string name="invalid_payers">Please choose at least one payer</string>
+    <string name="invalid_percentage">Selected payer(s) percentages must add to 100%</string>
+
     <string name="type">Type</string>
     <string name="invalid_amount">Please enter a number with up to 2 decimal places and provide a title</string>
     <string name="enter_amount">Enter Amount ($)</string>

@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,8 +37,6 @@ import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
 public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
     private List<PayerTableRow> candidates = new ArrayList<>();
-    private List<String> payers = new ArrayList<>();
-
     private final String AUTHORITY = "dataprovider.expensesplit";
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     private DateViewModel model;
@@ -131,17 +131,28 @@ public class SplitFragment extends Fragment {
         String title = binding.title.getText().toString();
         String amount = binding.amount.getText().toString();
         String date = binding.dateOutput.getText().toString();
-        setPayers();
 
-        if (!isValid(amount) || title.isEmpty()) {
+        // GET VALID CANDIDATES
+        List<PayerTableRow> validCandidates = new ArrayList<>();
+        double total = 0;
+        for (PayerTableRow candidate : candidates) {
+            if (!candidate.isChecked()) continue;
+            validCandidates.add(candidate);
+            total += candidate.getPercentage() * 0.001;
+        }
+
+        if (!isValid(amount) || title.isEmpty()) { // CHECK IF TITLE AND AMOUNT ARE VALID INPUTS
             Toast.makeText(getActivity(), R.string.invalid_amount, Toast.LENGTH_SHORT).show();
-        } else if (payers.isEmpty() && candidates.isEmpty()) {
+        } else if (validCandidates.isEmpty()) { // CHECK IF CANDIDATES EXIST
             Toast.makeText(getActivity(), R.string.invalid_payers, Toast.LENGTH_SHORT).show();
+        } else if (binding.radioButton2.isChecked() && total != 1.0) { // CHECK IF PERCENTAGE ADDS UP (only if Custom selected)
+            Toast.makeText(getActivity(), R.string.invalid_percentage, Toast.LENGTH_SHORT).show();
         } else {
             double A = Double.parseDouble(amount);
-            double S = A / candidates.size();
+            double S = A / validCandidates.size();
+
             // Add new instance to database
-            for (PayerTableRow candidate : candidates) {
+            for (PayerTableRow candidate : validCandidates) {
                 ContentValues values = new ContentValues();
                 values.put("title", title);
                 values.put("name", candidate.getName());
@@ -165,16 +176,6 @@ public class SplitFragment extends Fragment {
                 }
             }
             NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
-        }
-    }
-
-    private void setPayers() {
-        TableLayout table = binding.payers;
-        for (int i = 0; i < table.getChildCount(); i++) {
-            View child = table.getChildAt(i);
-            if (child instanceof CheckBox checkBox) {
-                if(checkBox.isChecked()) payers.add((String) checkBox.getText());
-            }
         }
     }
 
