@@ -74,11 +74,17 @@ public class SplitFragment extends Fragment {
         model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
         // Create the observer which updates the UI.
         final Observer<String> dateObserver = newDate -> {
+            if (newDate == null || newDate.isEmpty()) {
+                binding.dateOutput.setText("");
+                return;
+            }
             // Update the UI, in this case, a TextView.
             LocalDate parsed = LocalDate.parse(newDate); // expects yyyy-MM-dd
             String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
             binding.dateOutput.setText(formatted);
         };
+
+        model.setCurrentDate("");
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         model.getCurrentDate().observe(getViewLifecycleOwner(), dateObserver);
@@ -112,7 +118,10 @@ public class SplitFragment extends Fragment {
         // for now, just output a log message whenever submit/cancel pressed
         binding.save.setOnClickListener(this::save);
         binding.cancel.setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigate(R.id.homeFragment));
+        {
+            model.setCurrentDate("");
+            NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
+        });
     }
 
     private void addPayer(View v) {
@@ -175,6 +184,7 @@ public class SplitFragment extends Fragment {
                     Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_LONG).show();
                 }
             }
+            model.setCurrentDate("");
             NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
         }
     }

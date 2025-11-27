@@ -15,5 +15,7 @@ public class DateViewModel extends ViewModel {
         return currentDate;
     }
 
-    // Rest of the ViewModel...
+    public void setCurrentDate(String date) {
+        currentDate = new MutableLiveData<String>(date);
+    }
 }
