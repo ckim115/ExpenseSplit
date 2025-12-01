@@ -41,24 +41,6 @@ public class SplitFragment extends Fragment {
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     private DateViewModel model;
 
-    public SplitFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment SplitFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SplitFragment newInstance() {
-        SplitFragment fragment = new SplitFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

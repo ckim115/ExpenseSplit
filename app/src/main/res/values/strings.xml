@@ -26,12 +26,36 @@
     <string name="enter_amount">Enter Amount ($)</string>
     <string name="due_date">Due date</string>
     <string name="pick_a_date_optional">Pick a date (optional)</string>
+    <string name="information">Information</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="info_html"><![CDATA[
+    <b>Expense Split – Feature Overview</b><br><br>
+    <ul>
+    <li>Split – create a new expense split</li>
+    <li>Deadline – view active expenses with due dates</li>
+    <li>History – view previously completed expenses</li>
+    </ul><br>
 
+    <b>Split</b><br><br>
+    The user must provide:<br>
+    <ul>
+    <li>A title</li>
+    <li>An expense amount</li>
+    <li>At least one payer</li><br>
+    Press Save to create the split.<br><br>
 
-    <string-array name="types">
-        <item>Business</item>
-        <item>Casual</item>
-    </string-array>
+    <b>Deadline</b><br><br>
+    <ul>
+    <li>Sort by title, date, payer, or amount</li>
+    <li>Overdue items are shown in red</li>
+    <li>Long-press to move an item to History</li>
+    </ul><br>
+
+    <b>History</b><br>
+    <ul>
+    <li>Long-press to reactivate and send back to Deadline</li>
+    </ul>
+    ]]></string>
 
     <string-array name="sort_types">
         <item>Title</item>
