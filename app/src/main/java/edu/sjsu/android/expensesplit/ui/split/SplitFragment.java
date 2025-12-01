@@ -113,11 +113,17 @@ public class SplitFragment extends Fragment {
         model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
         // Create the observer which updates the UI.
         final Observer<String> dateObserver = newDate -> {
+            if (newDate == null || newDate.isEmpty()) {
+                binding.dateOutput.setText("");
+                return;
+            }
             // Update the UI, in this case, a TextView.
             LocalDate parsed = LocalDate.parse(newDate); // expects yyyy-MM-dd
             String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
             binding.dateOutput.setText(formatted);
         };
+
+        model.setCurrentDate("");
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         model.getCurrentDate().observe(getViewLifecycleOwner(), dateObserver);
@@ -143,7 +149,6 @@ public class SplitFragment extends Fragment {
         return binding.getRoot();
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -151,21 +156,25 @@ public class SplitFragment extends Fragment {
         // when clicking the '+' button, add the payer from the edittext to the existing list of payers
         binding.addButton.setOnClickListener(this::addPayer);
 
+        // for now, just output a log message whenever submit/cancel pressed
         binding.save.setOnClickListener(this::save);
         binding.cancel.setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigate(R.id.homeFragment));
+        {
+            model.setCurrentDate("");
+            NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
+        });
     }
 
     private void addPayer(View v) {
         String name = binding.payerName.getText().toString();
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), R.string.invalid_name, Toast.LENGTH_SHORT).show();
+        } else {
+            PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
+            binding.payers.addView(tableRow);
+            candidates.add(tableRow);
+            binding.payerName.setText("");
         }
-
-        PayerTableRow tableRow = new PayerTableRow(getActivity(), candidates.size(), name, binding.radioButton2.isChecked());
-        binding.payers.addView(tableRow);
-        candidates.add(tableRow);
-        binding.payerName.setText("");
     }
 
     private void save(View v) {
@@ -174,15 +183,27 @@ public class SplitFragment extends Fragment {
         String date = binding.dateOutput.getText().toString();
         setPayers();
 
-        if (!isValid(amount) || title.isEmpty()) {
+        // GET VALID CANDIDATES
+        List<PayerTableRow> validCandidates = new ArrayList<>();
+        double total = 0;
+        for (PayerTableRow candidate : candidates) {
+            if (!candidate.isChecked()) continue;
+            validCandidates.add(candidate);
+            total += (candidate.getPercentage() / 10) * 0.01;
+        }
+
+        if (!isValid(amount) || title.isEmpty()) { // CHECK IF TITLE AND AMOUNT ARE VALID INPUTS
             Toast.makeText(getActivity(), R.string.invalid_amount, Toast.LENGTH_SHORT).show();
-        } else if (payers.isEmpty() && candidates.isEmpty()) {
+        } else if (validCandidates.isEmpty()) { // CHECK IF CANDIDATES EXIST
             Toast.makeText(getActivity(), R.string.invalid_payers, Toast.LENGTH_SHORT).show();
+        } else if (binding.radioButton2.isChecked() && total != 1.0) { // CHECK IF PERCENTAGE ADDS UP (only if Custom selected)
+            Toast.makeText(getActivity(), R.string.invalid_percentage, Toast.LENGTH_SHORT).show();
         } else {
             double A = Double.parseDouble(amount);
-            double S = A / candidates.size();
+            double S = A / validCandidates.size();
+
             // Add new instance to database
-            for (PayerTableRow candidate : candidates) {
+            for (PayerTableRow candidate : validCandidates) {
                 ContentValues values = new ContentValues();
                 values.put("title", title);
                 values.put("name", candidate.getName());
@@ -209,6 +230,8 @@ public class SplitFragment extends Fragment {
                 requireActivity().getContentResolver().insert(CONTENT_URI, values);
             }
             Toast.makeText(getActivity(), "Split Created", Toast.LENGTH_LONG).show();
+
+            model.setCurrentDate("");
             NavHostFragment.findNavController(this).navigate(R.id.homeFragment);
         }
     }

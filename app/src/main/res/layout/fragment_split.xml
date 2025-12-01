@@ -95,12 +95,12 @@
         android:id="@+id/payers_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintHeight_max="200dp"
+        app:layout_constraintHeight_max="130dp"
         app:layout_constraintStart_toStartOf="@+id/payTitle"
         app:layout_constraintTop_toBottomOf="@+id/payTitle">
         <TableLayout
             android:id="@+id/payers"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
 

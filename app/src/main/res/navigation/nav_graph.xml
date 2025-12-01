@@ -38,4 +38,11 @@
         android:name="edu.sjsu.android.expensesplit.ui.history.HistoryFragment"
         android:label="History"
         tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="edu.sjsu.android.expensesplit.ui.InfoFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_info" />
+    <action android:id="@+id/to_info" app:destination="@id/infoFragment" />
 </navigation>
