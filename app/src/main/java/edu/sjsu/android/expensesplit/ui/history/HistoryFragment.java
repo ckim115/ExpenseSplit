@@ -1,13 +1,9 @@
 package edu.sjsu.android.expensesplit.ui.history;
 
-import static edu.sjsu.android.expensesplit.R.*;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +22,8 @@ import androidx.fragment.app.Fragment;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import edu.sjsu.android.expensesplit.R;
-import edu.sjsu.android.expensesplit.databinding.FragmentHistoryBinding;
 
 public class HistoryFragment extends Fragment {
 

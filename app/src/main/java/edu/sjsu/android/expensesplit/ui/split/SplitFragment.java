@@ -1,77 +1,46 @@
 package edu.sjsu.android.expensesplit.ui.split;
 
-import static android.app.ProgressDialog.show;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import edu.sjsu.android.expensesplit.R;
 import edu.sjsu.android.expensesplit.database.ExpensesDB;
 import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
 import edu.sjsu.android.expensesplit.notifications.Notification;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SplitFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SplitFragment extends Fragment {
     private FragmentSplitBinding binding;
-    private static final String TAG = "SplitFragmentLogger";
     private List<PayerTableRow> candidates = new ArrayList<>();
     private List<String> payers = new ArrayList<>();
 
@@ -79,24 +48,6 @@ public class SplitFragment extends Fragment {
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     private ExpensesDB db;
     private DateViewModel model;
-
-    public SplitFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment SplitFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SplitFragment newInstance() {
-        SplitFragment fragment = new SplitFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

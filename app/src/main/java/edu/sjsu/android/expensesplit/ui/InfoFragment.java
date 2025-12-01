@@ -1,7 +1,5 @@
 package edu.sjsu.android.expensesplit.ui;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,6 @@ import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
 import edu.sjsu.android.expensesplit.R;
-import edu.sjsu.android.expensesplit.databinding.FragmentSplitBinding;
 
 public class InfoFragment extends Fragment {
 
