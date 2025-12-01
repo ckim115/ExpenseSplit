@@ -189,7 +189,6 @@ public class SplitFragment extends Fragment {
         for (PayerTableRow candidate : candidates) {
             if (!candidate.isChecked()) continue;
             validCandidates.add(candidate);
-
             total += candidate.getPercentage() * 0.001;
         }
 
