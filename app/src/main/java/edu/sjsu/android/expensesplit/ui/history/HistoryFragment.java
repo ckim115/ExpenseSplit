@@ -24,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import edu.sjsu.android.expensesplit.R;
@@ -85,16 +87,20 @@ public class HistoryFragment extends Fragment {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 double amt = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
-                int colDue = cursor.getColumnIndex("due_date");
-                Long dueMs = cursor.isNull(colDue) ? null : cursor.getLong(colDue);
+                int dateIndex = cursor.getColumnIndex("due_date");
+                String dueDate = dateIndex == -1 ? null : cursor.getString(dateIndex);
 
                 t1.setText(title);
 
                 StringBuilder line2 = new StringBuilder();
                 line2.append(name).append(" • $").append(String.format("%.2f", amt));
-                if (dueMs != null) {
-                    String dStr = DateFormat.getDateFormat(context).format(new Date(dueMs));
-                    line2.append(" • due ").append(dStr);
+                if (dueDate != null) {
+                    LocalDate parsed = LocalDate.parse(dueDate); // expects yyyy-MM-dd
+                    String formatted = parsed.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+                    line2.append(" • due ").append(formatted);
+
+                    LocalDate today = LocalDate.now();
 
                     t1.setTextColor(0xFF000000);
                     t2.setTextColor(0xFF666666);
