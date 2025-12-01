@@ -5,18 +5,12 @@ import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
-
-import edu.sjsu.android.expensesplit.R;
+import java.util.Locale;
 
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
@@ -35,9 +29,9 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         DateViewModel model = new ViewModelProvider(requireActivity()).get(DateViewModel.class);
+
         int monthFromOne = month + 1;
-        String curMonth = monthFromOne == monthFromOne % 10 ? "0" + monthFromOne : String.valueOf(monthFromOne);
-        String curDay = day == day % 10 ? "0" + day : String.valueOf(day);
-        model.getCurrentDate().setValue(year + "-" + curMonth + "-" + curDay);
+        String newDate = String.format(Locale.US, "%04d-%02d-%02d", year, monthFromOne, day);
+        model.getCurrentDate().setValue(newDate);
     }
 }

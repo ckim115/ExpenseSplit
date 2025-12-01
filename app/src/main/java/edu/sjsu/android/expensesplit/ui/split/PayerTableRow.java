@@ -157,7 +157,7 @@ public class PayerTableRow extends TableRow {
     }
 
     public int getPercentage() {
-        return seekBar.getProgress();
+        return seekBar.getProgress() / 10 * 10;
     }
 
     public boolean isChecked() {
