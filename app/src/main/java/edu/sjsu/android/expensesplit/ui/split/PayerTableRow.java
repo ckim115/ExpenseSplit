@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
@@ -157,7 +158,7 @@ public class PayerTableRow extends TableRow {
     }
 
     public int getPercentage() {
-        return seekBar.getProgress();
+        return seekBar.getProgress() / 10 * 10;
     }
 
     public boolean isChecked() {
