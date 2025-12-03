@@ -1,6 +1,8 @@
 # Expense Split
 Expense Split is an Android application for splitting expenses among friends. The app automatically calculates who owes whom, tracks upcoming deadlines, highlights overdue payments, and organizes completed expenses separately.
 
+The APK, backlog, and final report are found in the folder named final_report.
+
 ## Features
 ### Split Page
 Create and configure new expenses:
