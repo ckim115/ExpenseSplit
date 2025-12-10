@@ -225,7 +225,7 @@ public class SplitFragment extends Fragment {
             message.append(" and ").append(others).append(" other(s)");
         }
 
-        message.append(" owe(s) " + amount + " today");
+        message.append(" owe(s) $" + amount + " today");
 
         // Add title and message as extras to the intent
         intent.putExtra("titleExtra", title);
