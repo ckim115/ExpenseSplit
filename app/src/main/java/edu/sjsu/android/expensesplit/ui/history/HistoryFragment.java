@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -30,6 +32,7 @@ public class HistoryFragment extends Fragment {
     private final String AUTHORITY = "dataprovider.expensesplit";
     private final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     private Spinner spinner;
+    private CheckBox sort;
 
     private ListView list;
     SimpleCursorAdapter adapter;
@@ -41,6 +44,7 @@ public class HistoryFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);
         list = root.findViewById(R.id.historyList);
+        sort = root.findViewById(R.id.sortOrder);
         spinner = root.findViewById(R.id.sort);
         ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(
                 requireActivity(),
@@ -130,6 +134,13 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        sort.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
+                loadData();
+            }
+        });
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -155,7 +166,8 @@ public class HistoryFragment extends Fragment {
 
         String selection = "complete IS 1"; //"due_date IS NOT NULL";
         String[] args = null;
-        String sort = sort_op + " ASC";
+        String sortOrder = sort.isChecked() ? " DESC" : " ASC";
+        String sort = " (CASE WHEN " + sort_op + " IS NULL then 1 ELSE 0 END)," + sort_op + sortOrder;
 
         Cursor c = requireContext().getContentResolver()
                 .query(CONTENT_URI, null, selection, args, sort);
